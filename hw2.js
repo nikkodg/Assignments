@@ -68,22 +68,6 @@ TextCell.prototype.draw = function(width, height) {
 };
 
 
-//function UnderlinedCell(inner) {
-//  this.inner = inner;
-//}
-//UnderlinedCell.prototype.minWidth = function() {
-//  return this.inner.minWidth();
-//};
-//UnderlinedCell.prototype.minHeight = function() {
-//  return this.inner.minHeight() + 1;
-//};
-//UnderlinedCell.prototype.draw = function(width, height) {
-//  return this.inner.draw(width, height - 1)
-//    .concat([repeat("-", width)]);
-//};
-
-// creates underlined cells for the column names
-
 function BorderedCell(text) {
     TextCell.call(this, text);
 }
@@ -93,12 +77,12 @@ BorderedCell.prototype.draw = function(width, height) {
   var result = [];
   var top = "-";
   var side = "|";
-  result.push(repeat(top, width));
+  result.push(repeat(top, width + 4));
   for (var i = 0; i < height; i++) {
     var line = this.text[i] || "";
-    result.push(side + repeat(" ", width - line.length) + line + side);
+    result.push(side  + line + repeat(" ", width- line.length + 2) + side);
   }
-    result.push(repeat(top, width));
+    result.push(repeat(top, width + 4));
   return result;
 };
 
@@ -127,26 +111,19 @@ CenterTextCell.prototype.draw = function(width, height) {
     var result = [];
     for (var i = 0; i < height; i++) {
         var line = this.text[i] || "";
-        result.push(repeat(" ", (width - line.length)/2) + line + repeat(" ", (width - line.length/2)));
+        result.push(repeat(" ", (width - line.length)/2) + line + repeat(" ", (width - line.length)/2));
     }
     return result;
 };
 
 //constructor that centers the text
 
-function dataTable(data) {
+function dataBorderedTable(data) {
   var keys = Object.keys(data[0]);
-//  var headers = keys.map(function(name) {
-//    return new UnderlinedCell(new TextCell(name));
-//  });
   var body = data.map(function(row) {
     return keys.map(function(name) {
       var value = row[name];
-      // This was changed:
-      if (typeof value == "number")
-        return BorderedCell(String(value));
-      else
-        return BorderedCell(String(value));
+        return new BorderedCell(String(value));
     });
   });
   return body;
@@ -154,22 +131,32 @@ function dataTable(data) {
 
 //mapss keys to array
 
-//var MOUNTAINS = [
-//  {name: "Kilimanjaro", height: 5895, country: "Tanzania"},
-//  {name: "Everest", height: 8848, country: "Nepal"},
-//  {name: "Mount Fuji", height: 3776, country: "Japan"},
-//  {name: "Mont Blanc", height: 4808, country: "Italy/France"},
-//  {name: "Vaalserberg", height: 323, country: "Netherlands"},
-//  {name: "Denali", height: 6168, country: "United States"},
-//  {name: "Popocatepetl", height: 5465, country: "Mexico"}
-//];
+function dataCenteredTable(data) {
+  var keys = Object.keys(data[0]);
+  var body = data.map(function(row) {
+    return keys.map(function(name) {
+      var value = row[name];
+        return new CenterTextCell(String(value));
+    });
+  });
+  return body;
+}
+
 
 var food = [
     {place: "Mastro's Ocean Club", price: "$$$$"},
     {place: "Denny's", price: "$"}
 ]
 
-console.log(drawTable(dataTable(food)));
+var people = [
+    
+]
+
+console.log("Problem 1: ");
+console.log(drawTable(dataCenteredTable(food)));
+console.log("Problem 2: ");
+console.log(drawTable(dataBorderedTable(food)));
 
 
-function rowToUppercase()
+
+//function rowToUppercase()
